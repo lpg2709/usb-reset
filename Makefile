@@ -1,5 +1,6 @@
 CC=gcc
 CFLAG=-Wall
+LFLAG=-lusb -lusb-1.0
 C_SOURCES=$(wildcard ./src/*.c)
 OBJ=$(C_SOURCES:.c=.o)
 P_NAME=usb-reset
@@ -8,7 +9,7 @@ RM = rm -rf
 all: $(P_NAME)
 
 $(P_NAME): $(OBJ)
-	$(CC) -o $@ $^ $(CFLAG)
+	$(CC) -o $@ $^ $(CFLAG) $(LFLAG)
 
 clean:
 	@ $(RM) $(OBJ) $(P_NAME)
