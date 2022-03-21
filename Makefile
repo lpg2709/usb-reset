@@ -13,4 +13,10 @@ $(P_NAME): $(OBJ)
 clean:
 	@ $(RM) $(OBJ) $(P_NAME)
 
-.PHONY: all clean
+install: $(P_NAME)
+	install -D ./$(P_NAME) $(DESTDIR)$(prefix)/bin/$(P_NAME)
+
+uninstall: $(P_NAME)
+	@ $(RM) $(DESTDIR)$(prefix)/bin/$(P_NAME)
+
+.PHONY: all clean install uninstall
