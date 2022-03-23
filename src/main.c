@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "./listusb.h"
 
 int main(){
-	printf("Hello, World!\n");
+	listusb();
 
 	return 0;
 }

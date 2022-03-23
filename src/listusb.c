@@ -1,10 +1,7 @@
-#include <libusb-1.0/libusb.h>
-#include <assert.h>
-#include <stdio.h>
+#include "./listusb.h"
 
-// https://github.com/gregkh/usbutils/blob/master/lsusb.c#L3637
 
-int main(){
+bool listusb(usb_device *devices){
     libusb_context *context;
     libusb_device **list;
     ssize_t         count;
@@ -21,9 +18,12 @@ int main(){
     {
         struct libusb_device *device;
         struct libusb_device_descriptor descriptor;
-        char buffer[256];
+        char str_product[256];
+        char str_manufacturer[256];
         struct libusb_device_handle *handle;
         int result;
+		u_int8_t bus;
+		u_int8_t port;
 
         device = list[index];
         if ((result = libusb_get_device_descriptor(device, &descriptor)) != 0)
@@ -38,26 +38,28 @@ int main(){
                 result, descriptor.idVendor, descriptor.idProduct);
             continue;
          }
-        fprintf(stdout, "\ndevice #: %zu ID %04X:%04X\n",
-            index, descriptor.idVendor, descriptor.idProduct);
 
         result = libusb_get_string_descriptor_ascii(
             handle,
             descriptor.iProduct,
-            (unsigned char *)buffer,
-            sizeof(buffer)
+            (unsigned char *)str_product,
+            sizeof(str_product)
         );
-        if (result != 0)
-            fprintf(stdout, "\tproduct     : %s\n", buffer);
+
         result = libusb_get_string_descriptor_ascii(
             handle,
             descriptor.iManufacturer,
-            (unsigned char *)buffer,
-            sizeof(buffer)
+            (unsigned char *)str_manufacturer,
+            sizeof(str_manufacturer)
         );
+
+		bus = libusb_get_bus_number(device);
+		port = libusb_get_port_number(device);
+
         if (result != 0)
-            fprintf(stdout, "\tmanufacturer: %s\n", buffer);
+            fprintf(stdout, "Bus %.3u Port %.3u: ID %04X:%04X %s %s\n", bus, port, descriptor.idVendor, descriptor.idProduct, str_manufacturer, str_product);
+
         libusb_close(handle);
     }
-    return 0;
+    return true;
 }
