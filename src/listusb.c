@@ -1,4 +1,5 @@
 #include "./listusb.h"
+#include <stdlib.h>
 
 
 bool listusb(usb_device *devices){
@@ -7,6 +8,7 @@ bool listusb(usb_device *devices){
     ssize_t         count;
     size_t          index;
 
+
     if (libusb_init(&context) != 0)
      {
         fprintf(stderr, "error: intializing `libusb'");
@@ -14,6 +16,9 @@ bool listusb(usb_device *devices){
      }
 
     count = libusb_get_device_list(context, &list);
+
+	devices = malloc(sizeof(usb_device) * count);
+
     for (index = 0; index < count; ++index)
     {
         struct libusb_device *device;
@@ -55,6 +60,10 @@ bool listusb(usb_device *devices){
 
 		bus = libusb_get_bus_number(device);
 		port = libusb_get_port_number(device);
+		devices->port = port;
+		devices->bus = bus;
+		devices->idVendor = descriptor.idVendor;
+		devices->idProduct = descriptor.idProduct;
 
         if (result != 0)
             fprintf(stdout, "Bus %.3u Port %.3u: ID %04X:%04X %s %s\n", bus, port, descriptor.idVendor, descriptor.idProduct, str_manufacturer, str_product);
