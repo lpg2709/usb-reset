@@ -1,4 +1,5 @@
 #include "./cli.h"
+#include "./version.h"
 
 char getch() {
         char buf = 0;
@@ -20,7 +21,23 @@ char getch() {
         return (buf);
 }
 
-bool menu(usb_device devices[MAX_DEVICES], ssize_t l_size){
+void usage(){
+	fprintf(stdout, "Usage: usb-reset [options]...\n"
+			"Send reset event to USB device\n"
+			"\n"
+			"OPTIONS:\n"
+			"-v, --version    Show version information and exit\n"
+			"-h, --help       Show this screen and exit\n"
+			"-y, --yes        Skip the confirmation step\n"
+			"-b, --bus        Bus number of the device [required to inform port]\n"
+			"-p, --port       Port number in the bus, [required to inform the bus]\n");
+}
+
+void version(){
+	fprintf(stdout, "%s\n", _VERSION);
+}
+
+bool menu(usb_device devices[MAX_DEVICES], ssize_t l_size, Options opt){
 
     size_t index;
     int8_t selected_index = 0;
@@ -51,36 +68,39 @@ bool menu(usb_device devices[MAX_DEVICES], ssize_t l_size){
 			case 'A':
 				selected_index--;
 				if(selected_index < 0)
-					selected_index = 0;
+					selected_index = l_size -1;
 				break;
 			case 'B':
 				selected_index++;
 				if(selected_index > l_size - 1)
-					selected_index = l_size - 1;
+					selected_index = 0;
 				break;
 		}
 	}
 
-	system("clear");
-	fprintf(stdout, "The follow devices gone be reseted\n");
-	for (index = 0; index < l_size; ++index){
-		usb_device device = devices[index];
-		if(device.toReset)
-			fprintf(stdout,
-					"Bus %.3u Port %.3u: ID %04X:%04X %s %s\n",
-					device.bus, device.port,
-					device.idVendor, device.idProduct,
-					device.manufacturer, device.product);
-	}
-	fprintf(stdout, "You confirm the selection? (y/n) ");
+	if(opt.confirmation){
+		system("clear");
+		fprintf(stdout, "The follow devices gone be reseted\n");
+		for (index = 0; index < l_size; ++index){
+			usb_device device = devices[index];
+			if(device.toReset)
+				fprintf(stdout,
+						"Bus %.3u Port %.3u: ID %04X:%04X %s %s\n",
+						device.bus, device.port,
+						device.idVendor, device.idProduct,
+						device.manufacturer, device.product);
+		}
+		fprintf(stdout, "You confirm the selection? (y/n) ");
 
-	confirmation = getchar();
-	getchar();
+		confirmation = getchar();
+		getchar();
 
-	if(confirmation == 'y' || confirmation == 'Y')
+		if(confirmation == 'y' || confirmation == 'Y')
+			return true;
+		else{
+			fprintf(stdout, "Operation canceled!\n");
+			return false;
+		}
+	}else
 		return true;
-	else{
-		fprintf(stdout, "Operation canceled!\n");
-		return false;
-	}
 }

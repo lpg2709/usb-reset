@@ -23,10 +23,23 @@ In this version enter the following command after installation
 sudo usb-reset
 ```
 
+## Script
+
+To use usb-reset in scripts, it is possible to pass the bus and the port as
+arguments, both being mandatory.
+
+```sh
+sudo ./usb-reset -b 1 -p 2
+```
+
+For more information:
+
+```sh
+usb-reset --help
+```
+
 ## TODO
 
-- FIX Port number
-- Add argument parser
-- Add command line options
 - Add Code standardization
 - Add test cases
+- Make program more consistent in use

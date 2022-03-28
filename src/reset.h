@@ -2,6 +2,7 @@
 #define RESET_H
 #include <stdio.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -11,6 +12,8 @@
 
 #include "./device.h"
 
-int usb_reset(usb_device d[MAX_DEVICES], ssize_t l_size);
+void reset(uint8_t bus, uint8_t port);
+int usb_reset(uint8_t bus, uint8_t port);
+int usb_reset_list(usb_device d[MAX_DEVICES], ssize_t l_size);
 
 #endif // RESET_H

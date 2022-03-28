@@ -7,7 +7,10 @@
 #include <termios.h>
 
 #include "./device.h"
+#include "./arg_parser.h"
 
-bool menu(usb_device devices[MAX_DEVICES], ssize_t l_size);
+void usage();
+void version();
+bool menu(usb_device devices[MAX_DEVICES], ssize_t l_size, Options opt);
 
 #endif // CLI_H
