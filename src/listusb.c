@@ -42,7 +42,7 @@ bool listusb(usb_device devices[MAX_DEVICES], ssize_t *l_size){
 		}
 
 		devices[index].bus = libusb_get_bus_number(device);
-		devices[index].port = libusb_get_port_number(device) - 1;
+		devices[index].port = libusb_get_device_address(device);
 		devices[index].idVendor = descriptor.idVendor;
 		devices[index].idProduct = descriptor.idProduct;
 
