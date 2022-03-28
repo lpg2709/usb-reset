@@ -43,3 +43,7 @@ usb-reset --help
 - Add Code standardization
 - Add test cases
 - Make program more consistent in use
+
+## License
+
+[MIT](./LICENSE)
